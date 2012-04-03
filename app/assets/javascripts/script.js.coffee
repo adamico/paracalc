@@ -23,10 +23,11 @@ $ ->
   svg = $("#rumack_container").svg('get')
   svg.script('var click=false;\n' +
   'var dosage = 0\n' +
+  'var delai = 0\n' +
   'var gE = function (iid) { return document.getElementById(iid) }\n' +
   'var mouse = function (evt) {\n' +
   '  xm=evt.clientX; ym=evt.clientY;\n' +
-  '  tx=108;ty=732;\n' +
+  '  tx=110;ty=702;\n' +
   '  svgx=xm-tx;\n' +
   '  svgy=ty-ym;\n' +
   "  hours_factor=#{hours_factor};\n" +
@@ -48,15 +49,17 @@ $ ->
   '  click=true;\n' +
   '  svgdoc = evt.target.ownerDocument;\n' +
   '  var xm = evt.clientX, ym = evt.clientY; // window coordinates under mouse cursor\n' +
-  '  var nx = xm-109, ny = ym-129;\n' +
-  '  var movex  = "translate(" + "0," + ny + ")";\n' +
+  '  var nx = xm-111, ny = 702-ym;\n' +
+  '  var movex  = "translate(0," + ny + ")";\n' +
   '  var movey  = "translate(" + nx + ",0)";\n' +
-  '  var move_conc = "translate(" + (nx + 38) + "," + (ny + 40) + ")";\n' +
-  '  var move_delai = "translate(" + (nx + 108) + "," + (ny + 70) + ")";\n' +
+  '  var move_conc = "translate(" + (nx + 45) + "," + (645 - ny) + ")";\n' +
+  '  var move_delai = "translate(" + (nx + 108) + "," + (665 - ny) + ")";\n' +
   '  svgdoc.getElementById("hori").setAttributeNS(null, "transform", movex);\n' +
   '  svgdoc.getElementById("vert").setAttributeNS(null, "transform", movey);\n' +
   '  var conc = gE("conc").innerHTML.split(" ")[0];\n' +
   '  var delai = gE("time").innerHTML.split(" ")[0];\n' +
+  '  gE("dosage").innerHTML = " " + conc + " mg/L";\n' +
+  '  gE("delai").innerHTML = " " + delai + " heure(s)";\n' +
   '  var conc_text = svgdoc.getElementById("conc_text");\n' +
   '  var delai_text = svgdoc.getElementById("delai_text");\n' +
   '  conc_text.setAttributeNS(null, "transform", move_conc);\n' +
@@ -69,26 +72,26 @@ $ ->
   '  var k2 = 0.840897\n' +
   '  var niveaux = new Array ( "négligeable", "faible", "important", "sévère" )\n' +
   '  var t = gE("time").innerHTML.split(" ")[0];\n' +
-  '  var dosage = gE("conc").innerHTML.split(" ")[0];\n' +
+  '  var conc = gE("conc").innerHTML.split(" ")[0];\n' +
   '  var k2t = Math.pow(k2,t);\n' +
   'if (t >= 4)\n' +
   '  {\n' +
-  '  if (dosage >= Math.round(k2t*k1[2]))\n' +
+  '  if (conc >= Math.round(k2t*k1[2]))\n' +
   '    {\n' +
   '    gE("risque").innerHTML = niveaux[3] //sevère;\n' +
   '    gE("risque").style.color="red";\n' +
   '    }\n' +
-  '  else if (dosage >= Math.round(k2t*k1[1]))\n' +
+  '  else if (conc >= Math.round(k2t*k1[1]))\n' +
   '    {\n' +
   '    gE("risque").innerHTML = niveaux[2] //important;\n' +
   '    gE("risque").style.color="orange";\n' +
   '    }\n' +
-  '  else if (dosage >= Math.round(k2t*k1[0]))\n' +
+  '  else if (conc >= Math.round(k2t*k1[0]))\n' +
   '    {\n' +
   '    gE("risque").innerHTML = niveaux[1] //faible;\n' +
   '    gE("risque").style.color="lime";\n' +
   '    }\n' +
-  '  else if (dosage == 0)\n' +
+  '  else if (conc == 0)\n' +
   '    {\n' +
   '    gE("risque").innerHTML = "";\n' +
   '    }\n' +
@@ -122,10 +125,6 @@ $ ->
     onmouseup:   "click=false"
   )
   # risk polygons
-  time_x = (time) ->
-    hours_factor * time
-  conc_y = (conc) ->
-    conc_factor * custLog(conc,10) - 50
   # matrix to invert coordinates
   invert = svg.group
     transform: "matrix(1, 0, 0, -1, 100, 600)"
@@ -141,9 +140,44 @@ $ ->
   svg.polygon(invert, [[time_x(4),conc_y(200)], [time_x(24),conc_y(6.25)], [time_x(24),conc_y(4.69)], [time_x(4),conc_y(150)]], {fill:"palegreen";stroke:"lime"})
   # white risk polygon
   svg.polygon(invert, [[time_x(4),conc_y(150)],[time_x(24),conc_y(4.69)],[time_x(24),conc_y(1)],[time_x(4),conc_y(1)]], {fill:"white";})
+
+  # axis captions
+  x_axis_settings = svg.group
+    transform: "matrix(1, 0, 0, -1, 100, 650)"
+    stroke: "grey"
+    strokeWidth: 2
+  # hours lines and labels
+  x_labels_settings = svg.group
+    transform: 'translate(100,650)'
+    fontSize: 18
+    strokeWidth: 2
+    textAnchor: "end"
+  for hour in [4, 8, 12, 16, 20]
+    svg.line(x_axis_settings, time_x(hour), -8, time_x(hour), y_limit)
+    svg.text(x_labels_settings, time_x(hour) + 5, 22, String(hour))
+  svg.text(x_labels_settings, time_x(16), 42, "Délai après ingestion (heures)", {fontSize: 24})
+
+  # concentration lines and labels
+  y_axis_settings = svg.group
+    transform: "matrix(1, 0, 0, -1, 100, 600)"
+    stroke: "grey"
+    strokeWidth: 2
+    "stroke-dasharray": "5,6"
+  y_labels_settings = svg.group
+    transform: 'translate(90,5)'
+    fontSize: 18
+    strokeWidth: 2
+    textAnchor: "end"
+
+  for conc in [10, 100, 150, 200, 300]
+    svg.line(y_axis_settings, 0, conc_y(conc), x_limit, conc_y(conc))
+    svg.text(y_labels_settings, 0, 600 - conc_y(conc), String(conc))
+  svg.text(y_labels_settings, -50, 250, "Paracétamolémie (µg/ml - mg/L)", {fontSize: 24, textAnchor: "middle", transform: "rotate(-90, 0, 300)"})
+
   # target cross
   targetcross = svg.group
-    transform: 'translate(100,50)'
+    transform: "matrix(1, 0, 0, -1, 100, 650)"
+    #transform: 'translate(100,50)'
     stroke: "black"
     strokeWidth: 2
   svg.line(targetcross, 0, 0, x_limit, 0, {id: "hori"}) #horizontal part of the cross
@@ -152,8 +186,64 @@ $ ->
   svg.text(null, 0,0, 'conc', {id: "conc_text"})        # conc
   svg.text(null, 0,0, 'delai', {id: "delai_text"})      # delai
 
+  $("#calc1").on 'submit', (event) ->
+    event.preventDefault()
+    calc_risque()
+
 # Functions
+time_x = (time) ->
+  hours_factor * time
+conc_y = (conc) ->
+  conc_factor * custLog(conc,10) - 50
+calc_risque = ->
+  svg = $("#rumack_container").svg('get')
+  hori = svg.getElementById("hori")
+  vert = svg.getElementById("vert")
+  conc_text = svg.getElementById("conc_text")
+  delai_text = svg.getElementById("delai_text")
+  t = $("#delai_for_calc").val()
+  conc = $("#dosage_for_calc").val()
+  k2t = Math.pow(k2,t)
+  final_t = "#{t} heure(s)"
+  final_conc = "#{conc} mg/L"
+  hori.setAttributeNS(null, "transform", "translate(0,#{conc_y(conc) + 50})")
+  vert.setAttributeNS(null, "transform", "translate(#{time_x(t)},0)")
+  conc_text.setAttributeNS(null, "transform", "translate(#{time_x(t) + 40},#{590 - conc_y(conc)})")
+  delai_text.setAttributeNS(null, "transform", "translate(#{time_x(t) + 110},#{620 - conc_y(conc)})")
+  conc_text.firstChild.nodeValue = final_conc
+  delai_text.firstChild.nodeValue = final_t
+  $("#dosage").html final_conc
+  $("#delai").html final_t
+  if t >= 4
+    if conc >= Math.round(k2t*k1[2])
+      $("#risque").html niveaux[3]
+      $("#risque").color="red"
+    else if conc >= Math.round(k2t*k1[1])
+      $("#risque").html niveaux[2]
+      $("#risque").color="orange"
+    else if (conc >= Math.round(k2t*k1[0]))
+      $("#risque").html niveaux[1]
+      $("#risque").color="lime"
+    else if conc is 0
+      $("#risque").html ""
+    else
+      $("#risque").html niveaux[0]
+      $("#risque").color="white"
+    $("#seuil_f").html Math.round(k2t*k1[0])
+    $("#seuil_i").html Math.round(k2t*k1[1])
+    $("#seuil_s").html Math.round(k2t*k1[2])
+  else
+    $("#risque").color="white"
+    $("#risque").html "indéterminable (paracétamolémie ininterprétable pour un délai < 4 heures)"
 
 custLog = (x,base) ->
   # Created 1997 by Brian Risk.  http:#brianrisk.com
   Math.log(x) / Math.log(base)
+
+calc_delai = ->
+  dosage = $('#dosage2').val()
+  if dosage <= 150
+    res = l1 - l2*(custLog(dosage,10))
+    $('#securite').html = Math.round(res) + " heures"
+  else
+    $('#securite').html = "ininterprétable"

@@ -1,3 +1,12 @@
+.hidden
+  display: none
+
+table.table
+  margin-bottom: 0
+  tbody tr:hover
+    th, td
+      background-color: inherit
+
 h3
   border-bottom: 2px solid black
 
@@ -16,14 +25,21 @@ th
 .resultat
   width: 20em
   padding: 1em
-  background-color: black
+  background-color: #333
   color: white
+  font-size: 20px
+  h2
+    color: white
 
-#left_content
-  width: 50%
-  float: left
+.container-fluid
+  border: 1px solid black
 
-#right_content
-  width: auto
-  margin-left: 2em
-  float: left
+#rumack_container
+  position: fixed
+  top: 50px
+  left: 10px
+
+#right
+  position: fixed
+  top: 50px
+  right: 100px

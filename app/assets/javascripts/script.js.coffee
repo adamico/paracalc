@@ -209,35 +209,36 @@ calc_risque = ->
   k2t = Math.pow(k2,t)
   final_t = "#{t} heure(s)"
   final_conc = "#{conc} mg/L"
-  hori.setAttributeNS(null, "transform", "translate(0,#{conc_y(conc) + 50})")
-  vert.setAttributeNS(null, "transform", "translate(#{time_x(t)},0)")
-  conc_text.setAttributeNS(null, "transform", "translate(#{time_x(t) + 40},#{590 - conc_y(conc)})")
-  delai_text.setAttributeNS(null, "transform", "translate(#{time_x(t) + 110},#{620 - conc_y(conc)})")
-  conc_text.firstChild.nodeValue = final_conc
-  delai_text.firstChild.nodeValue = final_t
-  $("#dosage").html final_conc
-  $("#delai").html final_t
-  if t >= 4
-    if conc >= Math.round(k2t*k1[2])
-      $("#risque").html niveaux[3]
-      $("#risque").css("color","red")
-    else if conc >= Math.round(k2t*k1[1])
-      $("#risque").html niveaux[2]
-      $("#risque").css("color","orange")
-    else if (conc >= Math.round(k2t*k1[0]))
-      $("#risque").html niveaux[1]
-      $("#risque").css('color',"lime")
-    else if conc is 0
-      $("#risque").html ""
+  if t and conc
+    hori.setAttributeNS(null, "transform", "translate(0,#{conc_y(conc) + 50})")
+    vert.setAttributeNS(null, "transform", "translate(#{time_x(t)},0)")
+    conc_text.setAttributeNS(null, "transform", "translate(#{time_x(t) + 40},#{590 - conc_y(conc)})")
+    delai_text.setAttributeNS(null, "transform", "translate(#{time_x(t) + 110},#{620 - conc_y(conc)})")
+    conc_text.firstChild.nodeValue = final_conc
+    delai_text.firstChild.nodeValue = final_t
+    $("#dosage").html final_conc
+    $("#delai").html final_t
+    if t >= 4
+      if conc >= Math.round(k2t*k1[2])
+        $("#risque").html niveaux[3]
+        $("#risque").css("color","red")
+      else if conc >= Math.round(k2t*k1[1])
+        $("#risque").html niveaux[2]
+        $("#risque").css("color","orange")
+      else if (conc >= Math.round(k2t*k1[0]))
+        $("#risque").html niveaux[1]
+        $("#risque").css('color',"lime")
+      else if conc is 0
+        $("#risque").html ""
+      else
+        $("#risque").html niveaux[0]
+        $("#risque").css('color',"white")
+      $("#seuil_f").html Math.round(k2t*k1[0])
+      $("#seuil_i").html Math.round(k2t*k1[1])
+      $("#seuil_s").html Math.round(k2t*k1[2])
     else
-      $("#risque").html niveaux[0]
-      $("#risque").css('color',"white")
-    $("#seuil_f").html Math.round(k2t*k1[0])
-    $("#seuil_i").html Math.round(k2t*k1[1])
-    $("#seuil_s").html Math.round(k2t*k1[2])
-  else
-    $("#risque").color="white"
-    $("#risque").html "indéterminable (paracétamolémie ininterprétable pour un délai < 4 heures)"
+      $("#risque").color="white"
+      $("#risque").html "indéterminable (paracétamolémie ininterprétable pour un délai < 4 heures)"
 
 custLog = (x,base) ->
   # Created 1997 by Brian Risk.  http:#brianrisk.com
@@ -245,8 +246,9 @@ custLog = (x,base) ->
 
 calc_delai = ->
   dosage = $('#dosage_for_calc2').val()
-  if dosage <= 150
-    res = l1 - l2*(custLog(dosage,10))
-    $('#securite').html ("< #{Math.round(res)} heures")
-  else
-    $('#securite').html "ininterprétable"
+  if dosage
+    if dosage <= 150
+      res = l1 - l2*(custLog(dosage,10))
+      $('#securite').html ("< #{Math.round(res)} heures")
+    else
+      $('#securite').html "ininterprétable"

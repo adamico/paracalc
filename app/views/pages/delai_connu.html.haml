@@ -47,9 +47,18 @@
     = form_tag "#", class: "form-inline", id: "calc1" do |f|
       = text_field_tag :dosage_for_calc, "", class: "input-small", placeholder: "dosage"
       = text_field_tag :delai_for_calc, "", class: "input-small", placeholder: "délai"
-      %button{type: "submit", class: "btn"} Calculer
+      %button{type: "submit", class: "btn"} Calculer le risque
 
     %h2 Délai inconnu ?
+    = form_tag "#", class: "form-inline", id: "calc2" do |f|
+      = text_field_tag :dosage_for_calc2, nil, class: "input-small", placehoder: "dosage"
+      mg/L
+      %button{type: "submit", class: "btn"} Calculer le délai de sécurité
+    %table.table
+      %tr
+        %th Délai de sécurité
+        %td#securite
+    %p (Le risque est négligéable si le délai est inférieur à la valeur calculée)
 
     .hidden
       %span#conc

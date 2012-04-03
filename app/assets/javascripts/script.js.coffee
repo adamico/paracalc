@@ -2,7 +2,7 @@ $ = jQuery
 
 k1 = [300, 400, 600]
 k2 = 0.840897
-niveaux = ["négligeable", "faible", "important", "sévère"]
+niveaux = ["NÉGLIGEABLE", "FAIBLE", "IMPORTANT", "SÉVÈRE"]
 dosage = 0
 
 l1 = 32.9155 #constantes pour la formule inverse
@@ -189,6 +189,9 @@ $ ->
   $("#calc1").on 'submit', (event) ->
     event.preventDefault()
     calc_risque()
+  $("#calc2").on 'submit', (event) ->
+    event.preventDefault()
+    calc_delai()
 
 # Functions
 time_x = (time) ->
@@ -217,18 +220,18 @@ calc_risque = ->
   if t >= 4
     if conc >= Math.round(k2t*k1[2])
       $("#risque").html niveaux[3]
-      $("#risque").color="red"
+      $("#risque").css("color","red")
     else if conc >= Math.round(k2t*k1[1])
       $("#risque").html niveaux[2]
-      $("#risque").color="orange"
+      $("#risque").css("color","orange")
     else if (conc >= Math.round(k2t*k1[0]))
       $("#risque").html niveaux[1]
-      $("#risque").color="lime"
+      $("#risque").css('color',"lime")
     else if conc is 0
       $("#risque").html ""
     else
       $("#risque").html niveaux[0]
-      $("#risque").color="white"
+      $("#risque").css('color',"white")
     $("#seuil_f").html Math.round(k2t*k1[0])
     $("#seuil_i").html Math.round(k2t*k1[1])
     $("#seuil_s").html Math.round(k2t*k1[2])
@@ -241,9 +244,9 @@ custLog = (x,base) ->
   Math.log(x) / Math.log(base)
 
 calc_delai = ->
-  dosage = $('#dosage2').val()
+  dosage = $('#dosage_for_calc2').val()
   if dosage <= 150
     res = l1 - l2*(custLog(dosage,10))
-    $('#securite').html = Math.round(res) + " heures"
+    $('#securite').html ("< #{Math.round(res)} heures")
   else
-    $('#securite').html = "ininterprétable"
+    $('#securite').html "ininterprétable"

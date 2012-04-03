@@ -1,0 +1,122 @@
+%h1 Calculateur intox paracétamol
+#cas1
+  #rumack_container
+  -#
+    / Translation to make place for y axis caption
+    %g{:transform => "matrix(1, 0, 0, -1, 100, 500)"}
+      %g{:stroke => "black", "stroke-width" => "2"}
+        / X (time) and Y (Log(AAP concentration)) axis
+        %rect{:fill => "none", :height => "450", :width => "600", :x => "0", :y => "0"}/
+        / hours lines
+        %path{:d => "M 20 450 V -5 z"}/
+        %path{:d => "M 60 450 V -5 z"}/
+        %path{:d => "M 120 450 V -5 z"}/
+        %path{:d => "M 180 450 V -5 z"}/
+        %g{"stroke-dasharray" => "3,5", "stroke-width" => "1"}
+          / Log10 line
+          %path{:d => "M 0 150 H 360 z"}/
+          / Log50 line
+          %path{:d => "M 0 254 H 360 z"}/
+          / Log100 line
+          %path{:d => "M 0 300 H 360 z"}/
+          / Log150 line
+          %path{:d => "M 0 326 H 360 z"}/
+          / Log200 line
+          %path{:d => "M 0 345 H 360 z"}/
+          / Log300 line
+          %path{:d => "M 0 371 H 360 z"}/
+        / 2,4,8,12,16,20 Hour Ticks
+        %path{:d => "M 20 0 V -5 z"}/
+        %path{:d => "M 120 0 V -5 z"}/
+        %path{:d => "M 180 0 V -5 z"}/
+        %path{:d => "M 240 0 V -5 z"}/
+        %path{:d => "M 300 0 V -5 z"}/
+      / Risque300 line
+      / <line x1="60" y1="371.56837" x2="360" y2="145.79678"
+      %line{:stroke => "red", "stroke-width" => "2", :x1 => "20", :x2 => "360", :y1 => "394.10488", :y2 => "145.79678"}/
+      / Risque200 line
+      / <line x1="60" y1="345.15450" x2="360" y2="119.38309"
+      %line{:stroke => "orange", "stroke-width" => "2", :x1 => "20", :x2 => "360", :y1 => "367.76796", :y2 => "119.38309"}/
+      / Risque150 line
+      / <line x1="60" y1="326.41387" x2="360" y2="100.64228"
+      %line{:stroke => "lime", "stroke-width" => "2", :x1 => "20", :x2 => "360", :y1 => "348.95037", :y2 => "100.64228"}/
+    %g{:fill => "black", "font-family" => "Verdana", "font-size" => "16", "font-weight" => "bold"}
+      / Y axis caption
+      %text{:dx => "250", :dy => "-50", :transform => "rotate(-90,100,500)", :x => "0", :y => "500"}
+        Paracétamolémie (µg/ml)
+      / Y axis labels
+      %g{:transform => "translate(80,55)"}
+        %text{:x => "0", :y => "450"} 1
+        %text{:transform => "translate(-10)", :x => "0", :y => "300"} 10
+        %g{:transform => "translate(-20)"}
+          %text{:x => "0", :y => "150"} 100
+          %g{"font-size" => "12", :transform => "translate(5)"}
+            %text{:x => "0", :y => "195.155"} 50
+            %text{:x => "0", :y => "123.58613"} 150
+            %text{:x => "0", :y => "123.58613"} 150
+            %text{:x => "0", :y => "104.84559"} 200
+            %text{:x => "0", :y => "78.43163"} 300
+          %text{:transform => "translate(-10)", :x => "0", :y => "0"} 1000
+      / X axis labels
+      %g{:transform => "translate(-5, 70)"}
+        %text{:x => "100", :y => "450"}
+          0
+        %text{:x => "120", :y => "450"}
+          2
+        %text{:x => "160", :y => "450"}
+          4
+        %text{:x => "220", :y => "450"}
+          8
+        %g{:transform => "translate(-5)"}
+          %text{:x => "280", :y => "450"}
+            12
+          %text{:x => "340", :y => "450"}
+            16
+          %text{:x => "400", :y => "450"}
+            20
+          %text{:x => "460", :y => "450"}
+            24
+      / X axis caption
+      %text{:dx => "130", :dy => "90", :x => "0", :y => "450"}
+        Délai après ingestion (heures)
+
+.resultat{:style => "float:left;margin-left:2em"}
+  %p
+    %strong
+      Risque :
+      %span#risque
+  %table{:summary => ""}
+    -#%tr
+      -#%th winX
+      -#%td#x
+    -#%tr
+      -#%th winY
+      -#%td#y
+    -#%tr
+      -#%th svgX
+      -#%td#coord_x
+    -#%tr
+      -#%th svgY
+      -#%td#coord_y
+
+    %tr
+      %th
+        %span#faible Seuil risque faible =
+      %td
+        %span#seuil_f
+    %tr
+      %th
+        %span#important Seuil risque important =
+      %td
+        %span#seuil_i
+    %tr
+      %th
+        %span#severe Seuil risque sévère =
+      %td
+        %span#seuil_s
+  %p
+    %strong Paracétamolémie :
+    %span#conc
+  %p
+    %strong Délai :
+    %span#time

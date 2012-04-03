@@ -15,7 +15,7 @@ conc_factor = y_limit / 3
 $ ->
   $("#rumack_container").svg
     settings:
-      width: 700
+      width: 800
       height: 700
       style: "float:left;"
       onmousemove: "mouse(evt)"
@@ -26,7 +26,7 @@ $ ->
   'var gE = function (iid) { return document.getElementById(iid) }\n' +
   'var mouse = function (evt) {\n' +
   '  xm=evt.clientX; ym=evt.clientY;\n' +
-  '  tx=58;ty=732;\n' +
+  '  tx=108;ty=732;\n' +
   '  svgx=xm-tx;\n' +
   '  svgy=ty-ym;\n' +
   "  hours_factor=#{hours_factor};\n" +
@@ -48,11 +48,11 @@ $ ->
   '  click=true;\n' +
   '  svgdoc = evt.target.ownerDocument;\n' +
   '  var xm = evt.clientX, ym = evt.clientY; // window coordinates under mouse cursor\n' +
-  '  var nx = xm-59, ny = ym-129;\n' +
+  '  var nx = xm-109, ny = ym-129;\n' +
   '  var movex  = "translate(" + "0," + ny + ")";\n' +
   '  var movey  = "translate(" + nx + ",0)";\n' +
-  '  var move_conc = "translate(" + (nx - 18) + "," + (ny + 40) + ")";\n' +
-  '  var move_delai = "translate(" + (nx + 58) + "," + (ny + 70) + ")";\n' +
+  '  var move_conc = "translate(" + (nx + 38) + "," + (ny + 40) + ")";\n' +
+  '  var move_delai = "translate(" + (nx + 108) + "," + (ny + 70) + ")";\n' +
   '  svgdoc.getElementById("hori").setAttributeNS(null, "transform", movex);\n' +
   '  svgdoc.getElementById("vert").setAttributeNS(null, "transform", movey);\n' +
   '  var conc = gE("conc").innerHTML.split(" ")[0];\n' +
@@ -107,13 +107,13 @@ $ ->
   '  gE("risque").innerHTML = "indéterminable (paracétamolémie ininterprétable pour un délai < 4 heures)";\n' +
   '  }\n' +
   '};')
-  svg.rect(0, 0, 700, 700,
+  svg.rect(0, 0, 800, 700,
     fill: 'white'
     stroke: 'black'
     strokeWidth: 1
   )
   # cartesian axis
-  svg.rect(50, 50, x_limit, y_limit,
+  svg.rect(100, 50, x_limit, y_limit,
     fill: 'lightgrey'
     stroke: 'black'
     strokeWidth: 2
@@ -128,7 +128,7 @@ $ ->
     conc_factor * custLog(conc,10) - 50
   # matrix to invert coordinates
   invert = svg.group
-    transform: "matrix(1, 0, 0, -1, 50, 600)"
+    transform: "matrix(1, 0, 0, -1, 100, 600)"
     strokeWidth:2
     onmousedown: "cliquer(evt);calc_risque()"
     onmousemove: "mouse(evt)"
@@ -143,7 +143,7 @@ $ ->
   svg.polygon(invert, [[time_x(4),conc_y(150)],[time_x(24),conc_y(4.69)],[time_x(24),conc_y(1)],[time_x(4),conc_y(1)]], {fill:"white";})
   # target cross
   targetcross = svg.group
-    transform: 'translate(50,50)'
+    transform: 'translate(100,50)'
     stroke: "black"
     strokeWidth: 2
   svg.line(targetcross, 0, 0, x_limit, 0, {id: "hori"}) #horizontal part of the cross
